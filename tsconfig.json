@@ -31,7 +31,6 @@
       "@adonisjs/repl",
       "@japa/preset-adonis/build/adonis-typings",
       "@adonisjs/lucid",
-      "@wahyubucil/adonis-prisma",
       "@adonisjs/auth",
       "@adonisjs/session",
       "@kaperskyguru/adonis-cache"
