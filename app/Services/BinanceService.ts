@@ -23,7 +23,8 @@ class BinanceService {
       APIKEY: Config.get('trade.binance_api_key'),
       APISECRET: Config.get('trade.binance_api_secret'),
       useServerTime: true,
-      test: true
+      test: true,
+      'family': 4,
     });
   }
 }

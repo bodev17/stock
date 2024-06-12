@@ -24,21 +24,7 @@ Route.get('/', async () => {
   return 'ok'
 })
 
-// Route.get('create', 'TestsController.create')
-
 
 Route.group(() => {
-  Route.get('chat', 'ConversationsController.listChat').middleware('auth')
-  Route.post('create', 'ConversationsController.createChat').middleware('auth')
-  Route.get('detail/:conversation_id', 'ConversationsController.getDetail').middleware('auth')
-  Route.post('send', 'ChatsController.sendMessage').middleware('auth')
-  Route.delete('delete/:conversation_id', 'ConversationsController.deleteChat')
-    .where('conversation_id', /[^a-z$]/)
-    .middleware('auth')
-  Route.put('out/:conversation_id', 'ConversationsController.outConversation')
-    .where('conversation_id', /[^a-z$]/)
-    .middleware('auth')
-  Route.put('add/:conversation_id', 'ConversationsController.addMember')
-    .where('conversation_id', /[^a-z$]/)
-    .middleware('auth')
-}).prefix('api')
+
+}).prefix('api').middleware('auth')

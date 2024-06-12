@@ -2,11 +2,13 @@ import BinanceService from "App/Services/BinanceService";
 
 BinanceService.boot()
 
-const circulatingSupplyBTC = 21000000; // Giả định: 18 triệu BTC
+BinanceService.binance.systemStatus().then(time => console.log(time))
 
-function formatNumber(number, decimals = 2) {
-  return number.toFixed(decimals).replace(/\d(?=(\d{3})+\.)/g, '$&,');
-}
+// const circulatingSupplyBTC = 21000000; // Giả định: 18 triệu BTC
+//
+// function formatNumber(number, decimals = 2) {
+//   return number.toFixed(decimals).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+// }
 
 // BinanceService.binance.websockets.miniTicker((markets) => {
 //   if (markets.BTCUSDT) {
@@ -28,11 +30,11 @@ function formatNumber(number, decimals = 2) {
 //
 // })
 
-import { OrderBook } from 'hft-limit-order-book';
-
-const lob = new OrderBook();
-lob.createOrder('limit', 'buy',1, 10, 1)
-lob.createOrder('limit', 'buy',100, 2, 2)
-const a=  lob.createOrder('limit', 'sell',50, 10, 3)
-console.log(a)
-console.log(lob.toString())
+// import { OrderBook } from 'hft-limit-order-book';
+//
+// const lob = new OrderBook();
+// lob.createOrder('limit', 'buy',1, 10, 1)
+// lob.createOrder('limit', 'buy',100, 2, 2)
+// const a=  lob.createOrder('limit', 'sell',50, 10, 3)
+// console.log(a)
+// console.log(lob.toString())
