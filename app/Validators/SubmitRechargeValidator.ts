@@ -1,8 +1,7 @@
 import {schema, CustomMessages, rules} from '@ioc:Adonis/Core/Validator'
 import type {HttpContextContract} from '@ioc:Adonis/Core/HttpContext'
-import {ChatType} from 'App/Enums/ChatType'
 
-export default class ChatValidator {
+export default class SubmitRechargeValidator {
   constructor(protected ctx: HttpContextContract) {
   }
 
@@ -26,24 +25,9 @@ export default class ChatValidator {
    *    ```
    */
   public schema = schema.create({
-    type: schema.enum(Object.values(ChatType)),
-    name: schema.string.optional([
-      rules.alphaNum({
-        allow: ['space']
-      }),
-      rules.minLength(5),
-      rules.maxLength(200),
-      rules.escape(),
-      rules.requiredWhen('type', '=', ChatType.GROUP)
+    money: schema.number.optional([
+      rules.required()
     ]),
-    send_to: schema.number.optional([
-      rules.requiredWhen('type', '=', ChatType.USER)
-    ]),
-    members: schema.array.optional([
-      rules.minLength(2),
-      rules.maxLength(100),
-      rules.requiredWhen('type', '=', ChatType.GROUP)
-    ]).members(schema.number())
   })
 
   /**

@@ -16,7 +16,6 @@
 import Logger from '@ioc:Adonis/Core/Logger'
 import HttpExceptionHandler from '@ioc:Adonis/Core/HttpExceptionHandler'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import {fa} from "@faker-js/faker";
 
 export default class ExceptionHandler extends HttpExceptionHandler {
   constructor () {

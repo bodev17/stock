@@ -1,158 +1,38 @@
-import Ws from "App/Services/ChatService";
-import ConversationService from "App/Services/ConversationService";
-import User from "App/Models/User";
-import {isArray} from "@poppinss/utils/build/src/Helpers/types";
+import BinanceService from "App/Services/BinanceService";
 
-Ws.boot()
-const conversationService = new ConversationService()
-import {validator} from '@ioc:Adonis/Core/Validator'
-import ChatValidator from "App/Validators/ChatValidator";
-import {HttpContextContract} from "@ioc:Adonis/Core/HttpContext";
-import Logger from "@ioc:Adonis/Core/Logger";
-import {prisma} from "@ioc:Adonis/Addons/Prisma";
-import CryptoJS from "crypto-js";
-import Config from "@ioc:Adonis/Core/Config";
+BinanceService.boot()
 
-// Mock HttpContextContract
-const ctx: HttpContextContract = {
-  // @ts-ignore
-  request: {},
-  // @ts-ignore
-  response: {},
+const circulatingSupplyBTC = 21000000; // Giả định: 18 triệu BTC
+
+function formatNumber(number, decimals = 2) {
+  return number.toFixed(decimals).replace(/\d(?=(\d{3})+\.)/g, '$&,');
 }
-const appKey = Config.get('app.appKey');
 
-/**
- * Listen for incoming socket connections
- */
-Ws.io.on('connection', (socket) => {
-  const user: User = socket.user
-  if (user) {
-    socket.join(`${user.id}`)
-  }
+// BinanceService.binance.websockets.miniTicker((markets) => {
+//   if (markets.BTCUSDT) {
+//
+//     const closePriceBTC = parseFloat(markets.BTCUSDT.close);
+//     const openPriceBTC = parseFloat(markets.BTCUSDT.open);
+//     const changeBTC = ((closePriceBTC - openPriceBTC) / openPriceBTC) * 100;
+//     const volume24hBTC = parseFloat(markets.BTCUSDT.volume);
+//     const marketCapBTC = closePriceBTC * circulatingSupplyBTC;
+//
+//     console.log(`BTC Price: ${formatNumber(closePriceBTC, 2)}`);
+//     console.log(`BTC Change: ${formatNumber(changeBTC, 2)}`);
+//     console.log(`BTC 24h Volume: ${formatNumber(volume24hBTC, 2)}`);
+//     console.log(`BTC Market Cap: ${formatNumber(marketCapBTC, 2)}`);
+//   }
+// })
 
-  socket.on('join_conversation', async (data) => {
-    if (user) {
-      // check user in conversation
-      if (typeof data.conversationId === 'string') {
-        const conversation = await conversationService.isInConversation(
-          data.conversationId,
-          user.id
-        )
-        if (conversation) {
-          socket.join(data.conversationId)
-        }
-      }
+// BinanceService.io.on('connection', (socket) => {
+//
+// })
 
-      if (isArray(data.conversationId)) {
-        const conversations = await conversationService.isInConversations(
-          data.conversationId,
-          user.id
-        )
+import { OrderBook } from 'hft-limit-order-book';
 
-        conversations.map(conversation => socket.join(conversation.id))
-      }
-    }
-
-    return false
-  })
-
-  socket.on('send_message', async (data) => {
-    if (user) {
-      const conversation = await conversationService.isInConversation(
-        data.conversationId,
-        user.id
-      )
-      if (conversation) {
-        const message = await conversationService.sendMessage(
-          data.conversationId,
-          user.id,
-          data.message
-        )
-        message.name = user.name
-        // socket.to(data.conversationId).emit("new_message", message);
-        // push to chatbox and list chat
-        Ws.io.to(data.conversationId).emit("new_message", message);
-      }
-    }
-
-    return false
-  })
-
-  socket.on('create_conversation', async (data, callbackFn) => {
-    if (user) {
-      try {
-        const input = await validator.validate({
-          schema: new ChatValidator(ctx).schema,
-          data: data
-        })
-
-        const conversation = await conversationService.createConversation(input, user)
-        // join all user to conversation
-        if (conversation) {
-          const members = conversation.members.map((num: { toString: () => any; }) => num.toString())
-
-          conversation.messages = await prisma.messages.findMany({
-            where: {
-              conversationId: conversation.id
-            },
-            orderBy: {
-              createdAt: 'desc'
-            },
-            take: 1
-          })
-          for (const message of conversation.messages) {
-            try {
-              const userSender = await User.find(message.senderId)
-              if (userSender) {
-                message.name = userSender?.name || '#User'
-              }
-              message.content = CryptoJS.AES.decrypt(message.content, appKey).toString(CryptoJS.enc.Utf8)
-            } catch (e) {
-              Logger.error(e)
-              message.content = '#Not found'
-            }
-            message.name = '#System'
-          }
-          if (conversation.type == 'user') {
-            const sendTo = conversation.members.filter((member: number) => {return member != user.id})
-            conversation.name = '#System'
-            if (sendTo[0]) {
-              const userSendTo = await User.find(sendTo[0])
-              conversation.name = userSendTo?.name || '#User'
-            }
-          }
-          const conversationCurrentUser = JSON.parse(JSON.stringify(conversation));
-
-          members.filter((member: number) => {return member != user.id})
-          if (conversation.type == 'user') {
-            conversation.name = user.name
-          }
-
-          socket.to(members).emit("new_conversation", conversation);
-
-          socket.emit("find_new_conversation", conversationCurrentUser);
-        }
-      } catch (error) {
-        if (error.code == 'E_VALIDATION_FAILURE') {
-          const firstField = Object.keys(error.messages)[0]; // Get the first field name
-          const firstMessage = error.messages[firstField][0]; // Get the first error message for the first field
-          const message = `Field ${firstField} ${firstMessage}`
-
-          callbackFn({
-            success: false,
-            message: message,
-            code: 422,
-          });
-        } else {
-          Logger.error(error)
-        }
-        callbackFn({
-          success: false,
-          message: 'Fail creating conversation, please try again!',
-          code: 1000,
-        });
-      }
-    }
-  })
-})
+const lob = new OrderBook();
+lob.createOrder('limit', 'buy',1, 10, 1)
+lob.createOrder('limit', 'buy',100, 2, 2)
+const a=  lob.createOrder('limit', 'sell',50, 10, 3)
+console.log(a)
+console.log(lob.toString())
