@@ -27,5 +27,4 @@ Route.get('/', async () => {
 
 Route.group(() => {
   Route.get('symbols', 'TradeController.getListSymbols')
-// }).prefix('api').middleware('auth')
-}).prefix('api')
+}).prefix('api').middleware('auth')

@@ -39,7 +39,7 @@ BinanceService.io.on('connection', (socket) => {
     symbols.forEach(symbol => {
       if (markets[symbol]) {
         const data = processMarketData(symbol, markets[symbol]);
-        socket.to(`${user.id}`).emit(symbol, data)
+        socket.to(`${user.id}`).emit('new_symbol_change', data)
       }
     });
   })
