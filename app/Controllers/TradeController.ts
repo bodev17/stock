@@ -6,7 +6,7 @@ import {SymbolPrice} from "App/Interface/SymbolPrice"
 const symbols = [
   'BTCUSDT', 'ETHBTC', 'BNBUSDT', 'SOLBNB', 'USDCBNB', 'XRPBTC', 'DOGEBNB',
   'ADABTC', 'AVAXBNB', 'SHIBUSDT', 'WBTCUSDT', 'TRXUSDT', 'DOTUSDT', 'LINKUSDT',
-  'BCHUSDT', 'NEARUSDT', 'MATICUSDT', 'UNIUSDT', 'LTCUSDT', 'PEPEUSDT'
+  'BCHUSDT', 'NEARUSDT', 'MATICUSDT', 'UNIUSDT', 'LTCUSDT', 'PEPEUSDT','USDCUSDT'
 ];
 
 export default class TradeController {

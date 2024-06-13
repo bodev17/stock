@@ -25,6 +25,7 @@ const symbols = [
   'UNIUSDT',
   'LTCUSDT',
   'PEPEUSDT',
+  'USDCUSDT',
 ];
 
 BinanceService.io.on('connection', (socket) => {
