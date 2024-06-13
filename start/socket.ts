@@ -1,34 +1,49 @@
 import BinanceService from "App/Services/BinanceService";
+import User from "App/Models/User";
+import {processMarketData} from "App/Helper/TradeHelper";
 
 BinanceService.boot()
 
-BinanceService.binance.systemStatus().then(time => console.log(time))
+const symbols = [
+  'BTCUSDT',
+  'ETHBTC',
+  'BNBUSDT',
+  'SOLBNB',
+  'USDCBNB',
+  'XRPBTC',
+  'DOGEBNB',
+  'ADABTC',
+  'AVAXBNB',
+  'SHIBUSDT',
+  'WBTCUSDT',
+  'TRXUSDT',
+  'DOTUSDT',
+  'LINKUSDT',
+  'BCHUSDT',
+  'NEARUSDT',
+  'MATICUSDT',
+  'UNIUSDT',
+  'LTCUSDT',
+  'PEPEUSDT',
+];
 
-// const circulatingSupplyBTC = 21000000; // Giả định: 18 triệu BTC
-//
-// function formatNumber(number, decimals = 2) {
-//   return number.toFixed(decimals).replace(/\d(?=(\d{3})+\.)/g, '$&,');
-// }
+BinanceService.io.on('connection', (socket) => {
+  // @ts-ignore
+  const user: User = socket.user
+  if (user) {
+    socket.join(`${user.id}`)
+  }
 
-// BinanceService.binance.websockets.miniTicker((markets) => {
-//   if (markets.BTCUSDT) {
-//
-//     const closePriceBTC = parseFloat(markets.BTCUSDT.close);
-//     const openPriceBTC = parseFloat(markets.BTCUSDT.open);
-//     const changeBTC = ((closePriceBTC - openPriceBTC) / openPriceBTC) * 100;
-//     const volume24hBTC = parseFloat(markets.BTCUSDT.volume);
-//     const marketCapBTC = closePriceBTC * circulatingSupplyBTC;
-//
-//     console.log(`BTC Price: ${formatNumber(closePriceBTC, 2)}`);
-//     console.log(`BTC Change: ${formatNumber(changeBTC, 2)}`);
-//     console.log(`BTC 24h Volume: ${formatNumber(volume24hBTC, 2)}`);
-//     console.log(`BTC Market Cap: ${formatNumber(marketCapBTC, 2)}`);
-//   }
-// })
-
-// BinanceService.io.on('connection', (socket) => {
-//
-// })
+  // new price
+  BinanceService.binance.websockets.miniTicker((markets) => {
+    symbols.forEach(symbol => {
+      if (markets[symbol]) {
+        const data = processMarketData(symbol, markets[symbol]);
+        socket.to(`${user.id}`).emit(symbol, data)
+      }
+    });
+  })
+})
 
 // import { OrderBook } from 'hft-limit-order-book';
 //
