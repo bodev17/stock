@@ -1,5 +1,6 @@
 import { BaseCommand } from '@adonisjs/core/build/standalone'
-import CryptoJS from 'crypto-js'
+// import SymbolService from "App/Services/SymbolService";
+import UserService from "App/Services/UserService";
 
 export default class TestCommand extends BaseCommand {
   /**
@@ -29,9 +30,9 @@ export default class TestCommand extends BaseCommand {
   }
 
   public async run() {
-    const encrypted = CryptoJS.AES.encrypt("Start Group Chat", 'w4rR_vVA9F282fGkAxkogPXKzggPtdb5')
-    this.logger.info(encrypted)
-    this.logger.info(encrypted.toString());
-    this.logger.info(CryptoJS.AES.decrypt('U2FsdGVkX19b/eQUKTMxnXma3uol+aKyHGTF+bLV26iBepApG9C8KjzjME20YjHU', "w4rR_vVA9F282fGkAxkogPXKzggPtdb5").toString(CryptoJS.enc.Utf8))
+    const userService: UserService = this.application.container.use('ioc:App/Contracts/ServiceContract')
+    const users = await userService.getDataUser([1]);
+    // const symbols = await new SymbolService().getActiveSymbols()
+    // this.logger.info(symbols)
   }
 }

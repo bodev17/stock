@@ -31,6 +31,7 @@
     "@adonisjs/session": "^6.4.0",
     "@kaperskyguru/adonis-cache": "^2.1.1",
     "@vinejs/vine": "^2.0.0",
+    "adonisjs-create-service": "github:hyungju/adonisjs-create-service",
     "axios": "^1.6.8",
     "crypto-js": "^4.2.0",
     "hft-limit-order-book": "^4.0.0",
