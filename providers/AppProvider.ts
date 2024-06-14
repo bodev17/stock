@@ -1,5 +1,5 @@
 import type { ApplicationContract } from '@ioc:Adonis/Core/Application'
-import UserService from "App/Services/UserService";
+// import UserService from "App/Services/UserService";
 
 export default class AppProvider {
   constructor (protected app: ApplicationContract) {
@@ -7,14 +7,14 @@ export default class AppProvider {
 
   public register () {
     // Register your own bindings
-    this.app.container.bind('ioc:App/Contracts/ServiceContract', () => {
-      return new UserService()
-    })
-
-    this.app.container.singleton('App/Services/UserService', () => {
-      const UserService = require('App/Services/UserService').default
-      return new UserService()
-    })
+    // this.app.container.bind('ioc:App/Contracts/ServiceContract', () => {
+    //   return new UserService()
+    // })
+    //
+    // this.app.container.singleton('App/Services/UserService', () => {
+    //   const UserService = require('App/Services/UserService').default
+    //   return new UserService()
+    // })
 
   }
 
