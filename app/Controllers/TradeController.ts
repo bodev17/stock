@@ -2,6 +2,7 @@ import {HttpContextContract} from "@ioc:Adonis/Core/HttpContext";
 import BinanceService from "App/Services/BinanceService";
 import {processMarketDataV2} from "App/Helper/TradeHelper";
 import {SymbolPrice} from "App/Interface/SymbolPrice"
+import SymbolService from "App/Services/SymbolService";
 
 const symbols = [
   'BTCUSDT', 'ETHBTC', 'BNBUSDT', 'SOLBNB', 'USDCBNB', 'XRPBTC', 'DOGEBNB',
@@ -10,7 +11,7 @@ const symbols = [
 ];
 
 export default class TradeController {
-  public constructor() {
+  public constructor(private symbolService: SymbolService) {
   }
 
   public async getListSymbols({response}: HttpContextContract) {
@@ -19,6 +20,8 @@ export default class TradeController {
     const filteredTickers = tickersArray.filter((ticker: SymbolPrice) => symbols.includes(ticker.symbol));
 
     const processedData: SymbolPrice[] = filteredTickers.map(processMarketDataV2);
+
+    console.log(this.symbolService.getActiveSymbols())
 
     return response.status(200).json({
       success: true,

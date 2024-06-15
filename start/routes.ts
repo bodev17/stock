@@ -27,4 +27,6 @@ Route.get('/', async () => {
 
 Route.group(() => {
   Route.get('symbols', 'TradeController.getListSymbols')
-}).prefix('api').middleware('auth')
+  Route.get('recharge', 'TradeController.getListSymbols')
+// }).prefix('api').middleware('auth')
+}).prefix('api')

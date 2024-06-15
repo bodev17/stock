@@ -1,8 +1,11 @@
-import Symbol from "App/Models/Symbol";
 import Cache from "@ioc:Kaperskyguru/Adonis-Cache";
-import {SymbolStatus} from "App/Enum/SymbolStatus";
+import SymbolRepositoryInterface from "App/Interface/SymbolRepositoryInterface";
 
 export default class SymbolService {
+  constructor(private symbolRepository: SymbolRepositoryInterface) {
+  }
+
+
   private readonly CACHE_KEY_LIST_SYMBOLS = 'list_symbols';
 
   public async getActiveSymbols() {
@@ -11,7 +14,8 @@ export default class SymbolService {
       return symbols;
     }
 
-    const symbolsData: Symbol[] = await Symbol.query().where('status', SymbolStatus.ACTIVE).pojo()
+    const symbolsData = this.symbolRepository.getActiveSymbols()
+    console.log(symbolsData)
     return symbolsData;
   }
 }
