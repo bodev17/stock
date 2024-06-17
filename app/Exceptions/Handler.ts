@@ -27,9 +27,20 @@ export default class ExceptionHandler extends HttpExceptionHandler {
      * Self handle the validation exception
      */
     if (error.code === 'E_VALIDATION_FAILURE') {
+      let message = 'Validation failed'
+      try {
+        if (error?.messages?.errors && error.messages.errors[0]?.message && error.messages.errors[0]?.field) {
+          const firstErrorMessage = error.messages.errors[0].message
+          const fieldName = error.messages.errors[0].field
+          message = `Field ${fieldName} ${firstErrorMessage}`
+        }
+      } catch (e) {
+        console.log(e)
+      }
+
       return ctx.response.status(422).json({
         success: false,
-        message: error.messages,
+        message: message,
         code: 422,
         errors: error
       });

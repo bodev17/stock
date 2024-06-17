@@ -1,13 +1,17 @@
 import RechargeRepositoryInterface from "App/Interface/RechargeRepositoryInterface";
 import Recharge from "App/Models/Recharge";
+import BaseRepository from "App/Repository/BaseRepository";
 
-export default class RechargeRepository implements RechargeRepositoryInterface {
-  public async create(newRecharge: {}): Promise<any> {
-    const recharge = await Recharge.create(newRecharge)
-    return Promise.resolve(recharge.$isPersisted);
+export default class RechargeRepository extends BaseRepository implements RechargeRepositoryInterface {
+  constructor() {
+    super(Recharge);
   }
 
-  getHistories(): Promise<any> {
-    return Promise.resolve(undefined);
+  public async getHistories(input: {} = {}): Promise<any> {
+    const page = input.page
+    const limit = input.limit
+
+    const recharges = this.query(input).paginate(page, limit)
+    return Promise.resolve(recharges);
   }
 }
