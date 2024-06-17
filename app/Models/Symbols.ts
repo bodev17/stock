@@ -1,7 +1,9 @@
 import { DateTime } from 'luxon'
 import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
 
-export default class Symbol extends BaseModel {
+export default class Symbols extends BaseModel {
+  static table: string = 'symbols'
+
   @column({ isPrimary: true })
   public id: number
 

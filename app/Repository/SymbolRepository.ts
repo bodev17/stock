@@ -1,12 +1,16 @@
-import SymbolRepositoryInterface from "App/Interface/SymbolRepositoryInterface";
-import Symbol from "App/Models/Symbol";
-import {SymbolStatus} from "App/Enum/SymbolStatus";
 import BaseRepository from "App/Repository/BaseRepository";
-import {inject} from "@adonisjs/fold";
+import SymbolRepositoryInterface from "App/Interface/SymbolRepositoryInterface";
+import Symbols from "App/Models/Symbols";
+import {SymbolStatus} from "App/Enum/SymbolStatus";
 
-export default class SymbolRepository implements SymbolRepositoryInterface {
-  public async getActiveSymbols(): Promise<any> {
-    const symbol = await Symbol.all()
-    return Promise.resolve(symbol);
+export default class SymbolRepository extends BaseRepository implements SymbolRepositoryInterface {
+  constructor() {
+    super(Symbols);
+  }
+
+  public async getActiveSymbols(input: PaginateInterface = {}): Promise<any> {
+    input.status = SymbolStatus.ACTIVE
+    const recharges = this.queryBuilder(input).select(['key']).pojo()
+    return Promise.resolve(recharges);
   }
 }

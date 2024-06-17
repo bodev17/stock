@@ -17,7 +17,16 @@ export default class RechargeService {
     }
 
     const result = await this.rechargeRepository.create(dataInsert)
-    console.log(result)
+    if (result.$isPersisted) {
+      return {
+        success: true,
+        data: result
+      }
+    }
+
+    return {
+      success: false,
+    }
   }
 
   public async getHistories(input: PaginateInterface = {}, user?: User) {

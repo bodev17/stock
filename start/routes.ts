@@ -31,10 +31,13 @@ Route.group(() => {
   Route.post('recharge/create', 'RechargeController.create')
   Route.get('recharge/histories', 'RechargeController.getHistories')
 
-  Route.get('withdraw/create', 'WithdrawController.create')
+  Route.post('withdraw/create', 'WithdrawController.create')
   Route.get('withdraw/histories', 'WithdrawController.getHistories')
 
-  Route.get('level', 'LevelController/level')
+  Route.get('level', 'LevelController.level')
+
+  Route.get('open-order', 'TradeController.getOpenOrder')
+  Route.post('create-order', 'TradeController.createOrder')
 
 }).prefix('api').middleware('auth')
 // }).prefix('api')

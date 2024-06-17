@@ -1,13 +1,17 @@
+import BaseRepository from "App/Repository/BaseRepository";
 import WithdrawRepositoryInterface from "App/Interface/WithdrawRepositoryInterface";
 import Withdraw from "App/Models/Withdraw";
 
-export default class WithDrawRepository implements WithdrawRepositoryInterface {
-  public async create(newRecharge: {}): Promise<any> {
-    const recharge = await Withdraw.create(newRecharge)
-    return Promise.resolve(recharge.$isPersisted);
+export default class WithDrawRepository extends BaseRepository implements WithdrawRepositoryInterface {
+  constructor() {
+    super(Withdraw);
   }
 
-  getHistories(): Promise<any> {
-    return Promise.resolve(undefined);
+  public async getHistories(input: PaginateInterface = {}): Promise<any> {
+    const page = input.page
+    const limit = input.limit
+
+    const recharges = this.queryBuilder(input).paginate(page, limit)
+    return Promise.resolve(recharges);
   }
 }

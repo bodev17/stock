@@ -1,13 +1,13 @@
 import {HttpContextContract} from "@ioc:Adonis/Core/HttpContext";
 import {inject} from "@adonisjs/fold";
-import RechargeService from "App/Services/RechargeService";
 import {schema, rules} from '@ioc:Adonis/Core/Validator'
 import {RechargeStatus} from "App/Enum/RechargeStatus";
 import {isNumber} from "@poppinss/utils/build/src/Helpers/types";
+import WithdrawService from "App/Services/WithdrawService";
 
 @inject()
-export default class RechargeController {
-  public constructor(private rechargeService: RechargeService) {
+export default class WithdrawController {
+  public constructor(private withdrawService: WithdrawService) {
   }
 
   public async create({request, response, auth}: HttpContextContract) {
@@ -24,8 +24,12 @@ export default class RechargeController {
     })
     const input: {content: string, money: number} = await request.validate({schema: data})
 
+    if (!auth.user) {
+      throw new Error('Unauthorized')
+    }
+
     try {
-      const result: {success: boolean, data?: any} = await this.rechargeService.create(input, auth.user)
+      const result: {success: boolean, data?: any, error_code?: number} = await this.withdrawService.create(input, auth.user)
 
       if (result.success) {
         return response.status(200).json({
@@ -36,8 +40,8 @@ export default class RechargeController {
       } else {
         return response.status(200).json({
           success: false,
-          error_code: 1100,
-          message: "An error create recharge, please try again later.",
+          error_code: result.error_code,
+          message: "An error create withdraw, please try again later.",
           data: []
         })
       }
@@ -67,7 +71,7 @@ export default class RechargeController {
     const input: PaginateInterface = await request.validate({schema: inputData})
 
     try {
-      const histories = await this.rechargeService.getHistories(input, auth.user)
+      const histories = await this.withdrawService.getHistories(input, auth.user)
       return response.status(200).json({
         success: true,
         message: "Success.",

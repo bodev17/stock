@@ -47,7 +47,7 @@ export default class BaseRepository {
 
   public async create(dataCreate: Object): Promise<any> {
     const data = await this.model.create(dataCreate);
-    return Promise.resolve(data.$isPersisted);
+    return Promise.resolve(data);
   }
 
   public async update(id: number | string, data: Object): Promise<any> {
