@@ -1,6 +1,8 @@
 import Cache from "@ioc:Kaperskyguru/Adonis-Cache";
 import SymbolRepositoryInterface from "App/Interface/SymbolRepositoryInterface";
+import {inject} from "@adonisjs/fold";
 
+@inject()
 export default class SymbolService {
   constructor(private symbolRepository: SymbolRepositoryInterface) {
   }

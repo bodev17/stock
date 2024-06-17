@@ -3,6 +3,7 @@ import BinanceService from "App/Services/BinanceService";
 import {processMarketDataV2} from "App/Helper/TradeHelper";
 import {SymbolPrice} from "App/Interface/SymbolPrice"
 import SymbolService from "App/Services/SymbolService";
+import {inject} from "@adonisjs/fold";
 
 const symbols = [
   'BTCUSDT', 'ETHBTC', 'BNBUSDT', 'SOLBNB', 'USDCBNB', 'XRPBTC', 'DOGEBNB',
@@ -10,6 +11,7 @@ const symbols = [
   'BCHUSDT', 'NEARUSDT', 'MATICUSDT', 'UNIUSDT', 'LTCUSDT', 'PEPEUSDT','USDCUSDT'
 ];
 
+@inject()
 export default class TradeController {
   public constructor(private symbolService: SymbolService) {
   }

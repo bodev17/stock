@@ -27,6 +27,14 @@ Route.get('/', async () => {
 
 Route.group(() => {
   Route.get('symbols', 'TradeController.getListSymbols')
-  Route.get('recharge', 'TradeController.getListSymbols')
+
+  Route.post('recharge/create', 'RechargeController.create')
+  Route.get('recharge/histories', 'RechargeController.getHistories')
+
+  Route.get('withdraw/create', 'WithdrawController.create')
+  Route.get('withdraw/histories', 'WithdrawController.getHistories')
+
+  Route.get('level', 'LevelController/level')
+
 // }).prefix('api').middleware('auth')
 }).prefix('api')

@@ -12,7 +12,12 @@ export default class AppProvider {
   }
 
   public async ready () {
-    await this.setupSymbolBinding()
+    const { default: SymbolRepository } = await import("App/Repository/SymbolRepository")
+    this.app.container.singleton(
+      'App/Interface/SymbolRepositoryInterface',
+      () => new SymbolRepository(),
+    )
+    // await this.setupSymbolBinding()
     // App is ready
     if (this.app.environment === 'web') {
       await import('../start/socket')
