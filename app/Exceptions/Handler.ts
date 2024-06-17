@@ -49,7 +49,7 @@ export default class ExceptionHandler extends HttpExceptionHandler {
     if (error.code === 'E_ROUTE_NOT_FOUND') {
       return ctx.response.status(404).json({
         success: false,
-        message: error.messages,
+        message: "" + error?.body || '404 not found',
         code: 404,
         errors: error
       });

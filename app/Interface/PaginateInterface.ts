@@ -1,4 +1,5 @@
-export default interface PaginateInterface {
-  page: number | null | undefined,
-  limit: number | null | undefined,
+interface PaginateInterface {
+  limit?: number;
+  page?: number;
+  [key: string]: any;
 }

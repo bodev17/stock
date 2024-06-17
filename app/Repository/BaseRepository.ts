@@ -2,7 +2,7 @@ export default class BaseRepository {
   constructor(protected model: any) {
   }
 
-  public query (option: {} = {}, order: {} = {}) {
+  public queryBuilder (option: PaginateInterface = {}, order: {} = {}) {
     delete option.limit
     delete option.page
 
@@ -46,7 +46,7 @@ export default class BaseRepository {
   }
 
   public async create(dataCreate: Object): Promise<any> {
-    const data = await this.model.query().create(dataCreate);
+    const data = await this.model.create(dataCreate);
     return Promise.resolve(data.$isPersisted);
   }
 

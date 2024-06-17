@@ -7,11 +7,11 @@ export default class RechargeRepository extends BaseRepository implements Rechar
     super(Recharge);
   }
 
-  public async getHistories(input: {} = {}): Promise<any> {
+  public async getHistories(input: PaginateInterface = {}): Promise<any> {
     const page = input.page
     const limit = input.limit
 
-    const recharges = this.query(input).paginate(page, limit)
+    const recharges = this.queryBuilder(input).paginate(page, limit)
     return Promise.resolve(recharges);
   }
 }

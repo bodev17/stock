@@ -36,5 +36,5 @@ Route.group(() => {
 
   Route.get('level', 'LevelController/level')
 
-// }).prefix('api').middleware('auth')
-}).prefix('api')
+}).prefix('api').middleware('auth')
+// }).prefix('api')

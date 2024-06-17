@@ -29,12 +29,15 @@ export default class AuthMiddleware {
         }
       }
     } catch (e) {
+      if (e.code === 'E_VALIDATION_FAILURE') {
+        throw e
+      }
       Logger.error(e)
     }
 
     return response.status(401).json({
       success: false,
-      message: 'Unauthorized',
+      message: 'Unauthorized.',
       code: 401,
       errors: []
     });
