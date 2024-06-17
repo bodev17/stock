@@ -12,11 +12,6 @@ export default class AppProvider {
   }
 
   public async ready () {
-    const { default: SymbolRepository } = await import("App/Repository/SymbolRepository")
-    this.app.container.singleton(
-      'App/Interface/SymbolRepositoryInterface',
-      () => new SymbolRepository(),
-    )
     // await this.setupSymbolBinding()
     // App is ready
     if (this.app.environment === 'web') {
@@ -28,28 +23,28 @@ export default class AppProvider {
     // Cleanup, since app is going down
   }
 
-  public async setupSymbolBinding() {
-    const { default: SymbolRepository } = await import("App/Repository/SymbolRepository")
-
-    const { default: SymbolService } = await import("App/Services/SymbolService")
-
-    const { default: TradeController } = await import('App/Controllers/TradeController')
-
-    this.app.container.singleton(
-      'App/Interface/SymbolRepositoryInterface',
-      () => new SymbolRepository(),
-    )
-
-    this.app.container.singleton('App/Services/SymbolService', () => {
-      const repo = this.app.container.use(
-        'App/Interface/SymbolRepositoryInterface',
-      )
-      return new SymbolService(repo)
-    })
-
-    this.app.container.singleton('App/Controllers/TradeController', () => {
-      const service = this.app.container.use('App/Services/SymbolService')
-      return new TradeController(service)
-    })
-  }
+  // public async setupSymbolBinding() {
+  //   const { default: SymbolRepository } = await import("App/Repository/SymbolRepository")
+  //
+  //   const { default: SymbolService } = await import("App/Services/SymbolService")
+  //
+  //   const { default: TradeController } = await import('App/Controllers/TradeController')
+  //
+  //   this.app.container.singleton(
+  //     'App/Interface/SymbolRepositoryInterface',
+  //     () => new SymbolRepository(),
+  //   )
+  //
+  //   this.app.container.singleton('App/Services/SymbolService', () => {
+  //     const repo = this.app.container.use(
+  //       'App/Interface/SymbolRepositoryInterface',
+  //     )
+  //     return new SymbolService(repo)
+  //   })
+  //
+  //   this.app.container.singleton('App/Controllers/TradeController', () => {
+  //     const service = this.app.container.use('App/Services/SymbolService')
+  //     return new TradeController(service)
+  //   })
+  // }
 }
