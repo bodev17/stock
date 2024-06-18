@@ -5,10 +5,40 @@ import OrderRepository from "App/Repository/OrderRepository";
 import Database from "@ioc:Adonis/Lucid/Database";
 import Application from "@ioc:Adonis/Core/Application";
 import SymbolService from "App/Services/SymbolService";
+import {OrderStatus} from "App/Enum/OrderStatus";
 
 @inject()
 export default class TradeService {
   constructor(protected orderRepository: OrderRepository) {
+  }
+
+  public async getHistoriesOrder(input: PaginateInterface, user: User) {
+    if (input.page === undefined || input.page < 1) {
+      input.page = 1
+    }
+    if (input.limit === undefined  || input.limit < 1 || input.limit > 100) {
+      input.limit = 10
+    }
+    input.user_id = user?.id
+
+    const page = input.page
+    const limit = input.limit
+
+    const histories = this.orderRepository.queryBuilder(input).paginate(page, limit)
+    return Promise.resolve(histories);
+  }
+
+  public async getOpenOrder (user: User) {
+    const input = {
+      user_id: user.id,
+      status: [
+        OrderStatus.STATUS_OPEN,
+        OrderStatus.STATUS_MATCH,
+      ],
+    }
+
+    const openOrders = this.orderRepository.queryBuilder(input).pojo()
+    return Promise.resolve(openOrders);
   }
 
   public async createOrder(input: Order, user: User) {

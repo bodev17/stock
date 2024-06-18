@@ -8,6 +8,8 @@ import TradeService from "App/Services/TradeService";
 import CreateOrderValidator from "App/Validators/CreateOrderValidator";
 import {TypeOrder} from "App/Enum/TypeOrder";
 import {SideOrder} from "App/Enum/SideOrder";
+import {rules, schema} from "@ioc:Adonis/Core/Validator";
+import {OrderStatus} from "App/Enum/OrderStatus";
 
 @inject()
 export default class TradeController {
@@ -32,8 +34,61 @@ export default class TradeController {
     })
   }
 
-  public async getOpenOrder() {
+  public async updateOrder({request, response, auth}: HttpContextContract) {
 
+  }
+  public async cancelOrder({request, response, auth}: HttpContextContract) {
+
+  }
+
+  public async getHistoriesOrder({request, response, auth}: HttpContextContract) {
+    const inputData = schema.create({
+      page: schema.number.optional([
+        rules.unsigned(),
+      ]),
+      limit: schema.number.optional([
+        rules.unsigned(),
+        rules.range(1, 100),
+      ]),
+      status: schema.enum.optional(Object.values(OrderStatus))
+    })
+    const input: PaginateInterface = await request.validate({schema: inputData})
+
+    if (!auth.user) {
+      throw new Error('Unauthorized')
+    }
+
+    try {
+      const histories = await this.tradeService.getHistoriesOrder(input, auth.user)
+      return response.status(200).json({
+        success: true,
+        message: "Success.",
+        data: histories
+      })
+    } catch (e) {
+      console.log(e)
+
+      return response.status(500).json({
+        success: false,
+        message: "An error occurred, please try again later.",
+        data: [],
+        errors: []
+      })
+    }
+  }
+
+  public async getOpenOrder({response, auth}: HttpContextContract) {
+    if (!auth.user) {
+      throw new Error('Unauthorized')
+    }
+
+    const result = await this.tradeService.getOpenOrder(auth.user)
+
+    return response.status(200).json({
+      success: true,
+      message: "Success.",
+      data: result
+    })
   }
 
   public async createOrder({request, response, auth}: HttpContextContract) {

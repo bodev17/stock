@@ -1,10 +1,12 @@
-import type { ApplicationContract } from '@ioc:Adonis/Core/Application'
+import { ApplicationContract } from '@ioc:Adonis/Core/Application'
+import {SymbolStatus} from "App/Enum/SymbolStatus";
+import { OrderBook } from 'hft-limit-order-book';
 
 export default class AppProvider {
   constructor (protected app: ApplicationContract) {
   }
 
-  public register () {
+  public async register() {
   }
 
   public async boot () {
@@ -12,7 +14,14 @@ export default class AppProvider {
   }
 
   public async ready () {
-    // await this.setupSymbolBinding()
+    // build hft
+    const symbolModel = this.app.container.use('App/Models/Symbols').default
+    const symbols = await symbolModel.query().where('status', SymbolStatus.ACTIVE).pojo()
+
+    this.app.container.singleton('hftOrder', () => {
+      return Object.fromEntries(symbols.map((item: { key: string; }) => [item.key, new OrderBook()]))
+    })
+
     // App is ready
     if (this.app.environment === 'web') {
       await import('../start/socket')
@@ -22,29 +31,4 @@ export default class AppProvider {
   public async shutdown () {
     // Cleanup, since app is going down
   }
-
-  // public async setupSymbolBinding() {
-  //   const { default: SymbolRepository } = await import("App/Repository/SymbolRepository")
-  //
-  //   const { default: SymbolService } = await import("App/Services/SymbolService")
-  //
-  //   const { default: TradeController } = await import('App/Controllers/TradeController')
-  //
-  //   this.app.container.singleton(
-  //     'App/Interface/SymbolRepositoryInterface',
-  //     () => new SymbolRepository(),
-  //   )
-  //
-  //   this.app.container.singleton('App/Services/SymbolService', () => {
-  //     const repo = this.app.container.use(
-  //       'App/Interface/SymbolRepositoryInterface',
-  //     )
-  //     return new SymbolService(repo)
-  //   })
-  //
-  //   this.app.container.singleton('App/Controllers/TradeController', () => {
-  //     const service = this.app.container.use('App/Services/SymbolService')
-  //     return new TradeController(service)
-  //   })
-  // }
 }

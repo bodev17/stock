@@ -37,7 +37,10 @@ Route.group(() => {
   Route.get('level', 'LevelController.level')
 
   Route.get('open-order', 'TradeController.getOpenOrder')
+  Route.get('histories-order', 'TradeController.getHistoriesOrder')
   Route.post('create-order', 'TradeController.createOrder')
+  Route.post('update-order', 'TradeController.updateOrder')
+  Route.post('cancel-order', 'TradeController.cancelOrder')
 
 }).prefix('api').middleware('auth')
 // }).prefix('api')
