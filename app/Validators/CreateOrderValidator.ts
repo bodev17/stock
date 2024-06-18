@@ -1,7 +1,9 @@
 import {schema, CustomMessages, rules} from '@ioc:Adonis/Core/Validator'
 import type {HttpContextContract} from '@ioc:Adonis/Core/HttpContext'
+import {TypeOrder} from "App/Enum/TypeOrder";
+import {SideOrder} from "App/Enum/SideOrder";
 
-export default class SubmitRechargeValidator {
+export default class CreateOrderValidator {
   constructor(protected ctx: HttpContextContract) {
   }
 
@@ -25,8 +27,20 @@ export default class SubmitRechargeValidator {
    *    ```
    */
   public schema = schema.create({
-    money: schema.number.optional([
-      rules.required()
+    type: schema.enum(Object.values(TypeOrder)),
+    side: schema.enum(Object.values(SideOrder)),
+    symbol: schema.string([
+      rules.required(),
+      rules.minLength(1),
+      rules.maxLength(20),
+    ]),
+    price: schema.number([
+      rules.required(),
+      rules.unsigned()
+    ]),
+    quantity: schema.number([
+      rules.required(),
+      rules.unsigned()
     ]),
   })
 

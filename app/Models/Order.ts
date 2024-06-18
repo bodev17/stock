@@ -2,6 +2,8 @@ import { DateTime } from 'luxon'
 import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
 
 export default class Order extends BaseModel {
+  static table: string = 'orders'
+
   @column({ isPrimary: true })
   public id: number
 
@@ -34,10 +36,4 @@ export default class Order extends BaseModel {
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime
-
-  public STATUS_OPEN = 'open';
-  public STATUS_CLOSE = 'close';
-  public STATUS_MATCH = 'match';
-  public STATUS_CANCEL = 'cancelled';
-  public STATUS_EXPIRED = 'expired';
 }

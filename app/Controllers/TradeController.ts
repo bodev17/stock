@@ -4,10 +4,17 @@ import {processMarketDataV2} from "App/Helper/TradeHelper";
 import {SymbolPrice} from "App/Interface/SymbolPrice"
 import SymbolService from "App/Services/SymbolService";
 import {inject} from "@adonisjs/fold";
+import TradeService from "App/Services/TradeService";
+import CreateOrderValidator from "App/Validators/CreateOrderValidator";
+import {TypeOrder} from "App/Enum/TypeOrder";
+import {SideOrder} from "App/Enum/SideOrder";
 
 @inject()
 export default class TradeController {
-  public constructor(private symbolService: SymbolService) {
+  public constructor(
+    private symbolService: SymbolService,
+    private tradeService: TradeService
+  ) {
   }
 
   public async getListSymbols({response}: HttpContextContract) {
@@ -25,10 +32,41 @@ export default class TradeController {
     })
   }
 
+  public async getOpenOrder() {
+
+  }
+
   public async createOrder({request, response, auth}: HttpContextContract) {
+    const input: {type: TypeOrder, side: SideOrder, symbol: string, price: number, quantity: number} = await request.validate(CreateOrderValidator)
+
+    if (!auth.user) {
+      throw new Error('Unauthorized')
+    }
+
+    try {
+      const result: {success: boolean, data?: any, error_code?: number} = await this.tradeService.createOrder(input, auth.user)
+
+      if (result.success) {
+        return response.status(200).json({
+          success: true,
+          message: "Success.",
+          data: result?.data || []
+        })
+      } else {
+        return response.status(200).json({
+          success: false,
+          error_code: result.error_code,
+          message: "An error create order, please try again later.",
+          data: []
+        })
+      }
+    } catch (e) {
+    }
+
     return response.status(200).json({
       success: true,
-      message: "Success.",
+      error_code: 4000,
+      message: "An error occurred please try again.",
       data: []
     })
   }
