@@ -26,11 +26,11 @@ BinanceService.io.on('connection', async (socket) => {
   })
 })
 //
-// import { OrderBook } from 'hft-limit-order-book';
-//
-// const lob = new OrderBook();
-// lob.createOrder('limit', 'buy',1, 10, 1)
-// lob.createOrder('limit', 'buy',100, 2, 2)
-// const a=  lob.createOrder('limit', 'sell',50, 10, 3)
-// console.log(a)
-// console.log(lob.toString())
+import { OrderBook } from 'hft-limit-order-book';
+
+const lob = new OrderBook();
+lob.createOrder('limit', 'buy',1, 10, 1)
+lob.createOrder('limit', 'buy',100, 2, 2)
+const a=  lob.createOrder('limit', 'sell',50, 10, 3)
+
+console.log(a.partial)
