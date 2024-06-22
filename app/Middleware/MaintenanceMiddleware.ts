@@ -11,7 +11,7 @@ export default class MaintenanceMiddleware {
         return response.status(503).json({
           success: false,
           message: "Maintenance",
-          code: 502,
+          code: 503,
           errors: []
         });
       }
@@ -22,7 +22,7 @@ export default class MaintenanceMiddleware {
       return response.status(503).json({
         success: false,
         message: "Maintenance",
-        code: 502,
+        code: 503,
         errors: []
       });
     }
