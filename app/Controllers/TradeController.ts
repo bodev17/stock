@@ -10,6 +10,7 @@ import {TypeOrder} from "App/Enum/TypeOrder";
 import {SideOrder} from "App/Enum/SideOrder";
 import {rules, schema} from "@ioc:Adonis/Core/Validator";
 import {OrderStatus} from "App/Enum/OrderStatus";
+import UpdateOrderValidator from "App/Validators/UpdateOrderValidator";
 
 @inject()
 export default class TradeController {
@@ -35,10 +36,69 @@ export default class TradeController {
   }
 
   public async updateOrder({request, response, auth}: HttpContextContract) {
+    const input: {side: SideOrder, price: number, quantity: number, id: number,} = await request.validate(UpdateOrderValidator)
 
+    if (!auth.user) {
+      throw new Error('Unauthorized')
+    }
+
+    try {
+      const result: {success: boolean, data?: any, error_code?: number} = await this.tradeService.updateOrder(input.id, input, auth.user)
+
+      if (result.success) {
+        return response.status(200).json({
+          success: true,
+          message: "Success.",
+          data: result?.data || []
+        })
+      } else {
+        return response.status(200).json({
+          success: false,
+          error_code: result.error_code,
+          message: "An error create order, please try again later.",
+          data: []
+        })
+      }
+    } catch (e) {
+    }
+
+    return response.status(200).json({
+      success: true,
+      error_code: 4000,
+      message: "An error occurred please try again.",
+      data: []
+    })
   }
   public async cancelOrder({request, response, auth}: HttpContextContract) {
+    const inputData = schema.create({
+      id: schema.number([
+        rules.required(),
+        rules.unsigned(),
+      ]),
+    })
+    const input: {id: number} = await request.validate({schema: inputData})
 
+    if (!auth.user) {
+      throw new Error('Unauthorized')
+    }
+
+    try {
+      const result = await this.tradeService.cancelOrder(input.id, auth.user)
+      return response.status(200).json({
+        success: true,
+        message: "Success.",
+        data: result?.data || []
+      })
+    } catch (e) {
+      console.log(e)
+
+      return response.status(500).json({
+        success: false,
+        message: "An error occurred, please try again later.",
+        data: [],
+        errors: []
+      })
+    }
   }
 
   public async getHistoriesOrder({request, response, auth}: HttpContextContract) {
